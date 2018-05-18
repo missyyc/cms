@@ -17,14 +17,14 @@ export default {
                 type: 'setToken',
                 payload: response,
             });
-            // yield put({
-            //   type: 'changeLoginStatus',
-            //   payload: response,
-            // });
+            yield put({
+                type: 'changeLoginStatus',
+                payload: response,
+            });
             // Login successfully
             if (response.status === 200) {
-                // reloadAuthorized();
-                yield put(routerRedux.push('/'));
+                reloadAuthorized();
+                yield put(routerRedux.push('/audios'));
             }
         },
         *logout(_, { put, select }) {

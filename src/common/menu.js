@@ -22,24 +22,28 @@ const menuData = [
         ],
     },
     {
-        name: '歌曲管理',
+        name: '音频管理',
         icon: 'heart-o',
-        path: 'songs',
+        path: 'audios',
+        authority: 'admin',
     },
     {
         name: '专辑管理',
         icon: 'heart-o',
         path: 'albums',
+        authority: 'admin',
     },
     {
         name: '标签管理',
         icon: 'heart-o',
         path: 'tags',
+        authority: 'admin',
     },
     {
         name: '歌词管理',
         icon: 'heart-o',
         path: 'lyrics',
+        authority: 'admin',
     },
 ];
 

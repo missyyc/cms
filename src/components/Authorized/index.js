@@ -15,17 +15,17 @@ Authorized.check = check;
  * @param {string|()=>String} currentAuthority
  */
 const renderAuthorize = currentAuthority => {
-  if (currentAuthority) {
-    if (currentAuthority.constructor.name === 'Function') {
-      CURRENT = currentAuthority();
+    if (currentAuthority) {
+        if (currentAuthority.constructor.name === 'Function') {
+            CURRENT = currentAuthority();
+        }
+        if (currentAuthority.constructor.name === 'String') {
+            CURRENT = currentAuthority;
+        }
+    } else {
+        CURRENT = 'NULL';
     }
-    if (currentAuthority.constructor.name === 'String') {
-      CURRENT = currentAuthority;
-    }
-  } else {
-    CURRENT = 'NULL';
-  }
-  return Authorized;
+    return Authorized;
 };
 
 export { CURRENT };

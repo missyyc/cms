@@ -48,7 +48,7 @@ class UserLayout extends React.PureComponent {
                 <div className={styles.container}>
                     <div className={styles.content}>
                         <div className={styles.top}>
-                            <h2>好物集</h2>
+                            <h2>痒痒虫CMS</h2>
                         </div>
                         <Switch>
                             {getRoutes(match.path, routerData).map(item => (

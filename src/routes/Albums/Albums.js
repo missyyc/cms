@@ -15,6 +15,7 @@ import {
     Divider,
     List,
     Upload,
+    Tag,
 } from 'antd';
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -447,7 +448,11 @@ export default class SongsList extends PureComponent {
             {
                 title: '歌曲',
                 dataIndex: 'songs',
-                render: val => <span>{val.song_name}</span>,
+                render: val => {
+                    return val.map((song, idx) => {
+                        return <p key={idx}>{song.song_name}</p>;
+                    });
+                },
             },
             {
                 title: '播放次数',
@@ -460,20 +465,20 @@ export default class SongsList extends PureComponent {
             {
                 title: '标签',
                 dataIndex: 'tags',
-                render: val => val,
+                render: val => {
+                    return val.map((tag, idx) => {
+                        return <Tag key={idx}>{tag.tag_name}</Tag>;
+                    });
+                },
             },
-            // {
-            //     title: '操作',
-            //     render: (text, row, index) => (
-            //         <Fragment>
-            //             <a href-void="true" onClick={() => this.editItem(row)}>更新</a>
-            //             <Divider type="vertical" />
-            //             <a href-void="true" onClick={() => this.updateItem({ ...row, "status": 1 })}>上架</a>
-            //             <Divider type="vertical" />
-            //             <a href-void="true" onClick={() => this.updateItem({ ...row, "status": -1 })}>下架</a>
-            //         </Fragment>
-            //     ),
-            // },
+            {
+                title: '操作',
+                render: (text, row, index) => (
+                    <Fragment>
+                        <a href-void="true" onClick={() => this.editItem(row)}>更新</a>
+                    </Fragment>
+                ),
+            },
         ];
 
         const menu = (

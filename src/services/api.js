@@ -26,37 +26,37 @@ export async function getUploadToken() {
     return request(`${APIURL}/qiniu/token`);
 }
 
-// 歌曲信息=======================
-export async function fetchSongs() {
-    return request(`${APIURL}/songs/list`);
+// 音频信息=======================
+export async function fetchAudios() {
+    return request(`${APIURL}/audios/list`);
 }
 
-export async function readSong(params) {
-    return request(`${APIURL}/songs/read/${params._id}`);
+export async function readAudio(params) {
+    return request(`${APIURL}/audios/read/${params._id}`);
 }
 
-export async function createSong(params) {
-    return request(`${APIURL}/songs/create`, {
+export async function createAudio(params) {
+    return request(`${APIURL}/audios/create`, {
         method: 'POST',
         body: params,
     });
 }
 
-export async function updateSong(params) {
-    return request(`${APIURL}/songs/update/${params._id}`, {
+export async function updateAudio(params) {
+    return request(`${APIURL}/audios/update/${params._id}`, {
         method: 'PUT',
         body: params,
     });
 }
 
-export async function deleteSong(params) {
-    return request(`${APIURL}/songs/${params._id}`, {
+export async function deleteAudio(params) {
+    return request(`${APIURL}/audios/${params._id}`, {
         method: 'DELETE',
     });
 }
 
-export async function deleteMultiSongs(params) {
-    return request(`${APIURL}/songs/delete/multi`, {
+export async function deleteMultiAudios(params) {
+    return request(`${APIURL}/audios/delete/multi`, {
         method: 'POST',
         body: params,
     });

@@ -1,16 +1,16 @@
 import _ from 'lodash';
 import { message } from 'antd';
 import {
-    fetchSongs,
-    readSong,
-    createSong,
-    updateSong,
-    deleteSong,
-    deleteMultiSongs,
+    fetchAudios,
+    readAudio,
+    createAudio,
+    updateAudio,
+    deleteAudio,
+    deleteMultiAudios,
 } from '../services/api';
 
 export default {
-    namespace: 'songs',
+    namespace: 'audios',
 
     state: {
         list: [],
@@ -18,17 +18,17 @@ export default {
 
     effects: {
         *list({ payload }, { call, put }) {
-            const response = yield call(fetchSongs, payload);
+            const response = yield call(fetchAudios, payload);
             yield put({
                 type: 'initList',
                 payload: Array.isArray(response.results) ? response.results : [],
             });
         },
         *read({ payload }, { call, put }) {
-            const response = yield call(readSong, payload);
+            const response = yield call(readAudio, payload);
         },
         *create({ payload }, { call, put }) {
-            const response = yield call(createSong, payload);
+            const response = yield call(createAudio, payload);
             message.success('创建歌曲成功！');
             yield put({
                 type: 'addToList',
@@ -36,7 +36,7 @@ export default {
             });
         },
         *update({ payload }, { call, put }) {
-            const response = yield call(updateSong, payload);
+            const response = yield call(updateAudio, payload);
             if (response) {
                 message.success('更新歌曲成功');
                 yield put({
@@ -46,7 +46,7 @@ export default {
             }
         },
         *delete({ payload }, { call, put }) {
-            const response = yield call(deleteSong, payload);
+            const response = yield call(deleteAudio, payload);
             if (response) {
                 message.success('删除歌曲成功');
                 yield put({
@@ -56,7 +56,7 @@ export default {
             }
         },
         *deleteMulti({ payload }, { call, put }) {
-            const response = yield call(deleteMultiSongs, payload);
+            const response = yield call(deleteMultiAudios, payload);
             if (response) {
                 message.success('删除歌曲成功');
                 yield put({

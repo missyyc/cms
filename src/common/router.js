@@ -76,20 +76,20 @@ export const getRouterData = app => {
                 import('../layouts/BasicLayout')
             ),
         },
-        '/exception/403': {
-            component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
-        },
-        '/exception/404': {
-            component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
-        },
-        '/exception/500': {
-            component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
-        },
-        '/exception/trigger': {
-            component: dynamicWrapper(app, ['error'], () =>
-                import('../routes/Exception/triggerException')
-            ),
-        },
+        // '/exception/403': {
+        //     component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
+        // },
+        // '/exception/404': {
+        //     component: dynamicWrapper(app, [], () => import('../routes/Exception/404')),
+        // },
+        // '/exception/500': {
+        //     component: dynamicWrapper(app, [], () => import('../routes/Exception/500')),
+        // },
+        // '/exception/trigger': {
+        //     component: dynamicWrapper(app, ['error'], () =>
+        //         import('../routes/Exception/triggerException')
+        //     ),
+        // },
         '/user': {
             component: dynamicWrapper(app, [], () => import('../layouts/UserLayout')),
         },
@@ -102,9 +102,9 @@ export const getRouterData = app => {
         '/user/register-result': {
             component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
         },
-        '/songs': {
-            component: dynamicWrapper(app, ['songs', 'lyrics', 'qiniu'], () =>
-                import('../routes/Songs/Songs')
+        '/audios': {
+            component: dynamicWrapper(app, ['audios', 'lyrics', 'qiniu'], () =>
+                import('../routes/Audios/Audios')
             ),
         },
         '/albums': {

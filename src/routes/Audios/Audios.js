@@ -20,7 +20,7 @@ import {
 import StandardTable from 'components/StandardTable';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
-import styles from './Songs.less';
+import styles from './Audios.less';
 import Config from '../../config';
 
 const FormItem = Form.Item;
@@ -51,38 +51,40 @@ const CreateForm = Form.create()(props => {
             let newFieldsValue = { ...fieldsValue };
             if (err) return;
             form.resetFields();
+
+            const { img, audio } = newFieldsValue;
+
+            const imgObj = {
+                type: img.type,
+                name: img.name,
+                url: `${domain}/${img.response.hash}`,
+                hash: img.response.hash,
+                key: img.response.key,
+                uid: img.uid,
+            };
+
+            const audioObj = {
+                type: audio.type,
+                name: audio.name,
+                url: `${domain}/${audio.response.hash}`,
+                hash: audio.response.hash,
+                key: audio.response.key,
+                uid: audio.uid,
+            };
+
+            newFieldsValue = Object.assign(
+                newFieldsValue,
+                { img: imgObj },
+                { audio: audioObj }
+            );
+
             if (editable) {
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
-                handleUpdate(newFieldsValue);
+                handleUpdate(newFieldsValue)
             } else {
-                const { img, audio } = newFieldsValue;
-
-                const imgObj = {
-                    type: img.type,
-                    name: img.name,
-                    url: `${domain}/${img.response.hash}`,
-                    hash: img.response.hash,
-                    key: img.response.key,
-                    uid: img.uid,
-                };
-
-                const audioObj = {
-                    type: audio.type,
-                    name: audio.name,
-                    url: `${domain}/${audio.response.hash}`,
-                    hash: audio.response.hash,
-                    key: audio.response.key,
-                    uid: audio.uid,
-                };
-
-                newFieldsValue = Object.assign(
-                    newFieldsValue,
-                    { img: imgObj },
-                    { audio: audioObj }
-                );
-
                 handleCreate(newFieldsValue);
             }
+
         });
     };
     const formItemLayout = {
@@ -100,7 +102,7 @@ const CreateForm = Form.create()(props => {
     const lyricOptions = lyrics.map((lyric, idx) => {
         return (
             <Option key={`lyric_option_${idx}`} value={lyric._id}>
-                {lyric.song_name}
+                {lyric.audio_name}
             </Option>
         );
     });
@@ -182,8 +184,8 @@ const CreateForm = Form.create()(props => {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="歌曲名称">
-                        {getFieldDecorator('song_name', {
-                            initialValue: editableItem.song_name,
+                        {getFieldDecorator('audio_name', {
+                            initialValue: editableItem.audio_name,
                             rules: [
                                 {
                                     required: true,
@@ -192,7 +194,7 @@ const CreateForm = Form.create()(props => {
                             ],
                         })(<Input placeholder="歌曲名称" />)}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="歌曲名称">
+                    <FormItem {...formItemLayout} label="翻唱自">
                         {getFieldDecorator('cover_singer', {
                             initialValue: editableItem.cover_singer,
                             rules: [
@@ -240,8 +242,8 @@ const CreateForm = Form.create()(props => {
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="歌词">
-                        {getFieldDecorator('lyric', {
-                            initialValue: editableItem.lyric,
+                        {getFieldDecorator('lyrics', {
+                            initialValue: editableItem.lyrics,
                             rules: [],
                         })(
                             <Select
@@ -332,12 +334,12 @@ const CreateForm = Form.create()(props => {
     );
 });
 
-@connect(({ songs, lyrics, tags, qiniu, loading }) => ({
-    songs,
+@connect(({ audios, lyrics, tags, qiniu, loading }) => ({
+    audios,
     lyrics,
     tags,
     qiniu,
-    loading: loading.models.songs,
+    loading: loading.models.audios,
 }))
 @Form.create()
 export default class SongsList extends PureComponent {
@@ -353,7 +355,7 @@ export default class SongsList extends PureComponent {
     componentDidMount() {
         const { dispatch } = this.props;
         dispatch({
-            type: 'songs/list',
+            type: 'audios/list',
         });
         dispatch({
             type: 'lyrics/list',
@@ -387,7 +389,7 @@ export default class SongsList extends PureComponent {
         }
 
         dispatch({
-            type: 'songs/list',
+            type: 'audios/list',
             payload: params,
         });
     };
@@ -399,7 +401,7 @@ export default class SongsList extends PureComponent {
             formValues: {},
         });
         dispatch({
-            type: 'songs/list',
+            type: 'audios/list',
             payload: {},
         });
     };
@@ -418,7 +420,7 @@ export default class SongsList extends PureComponent {
         switch (e.key) {
         case 'remove':
             dispatch({
-                type: 'songs/deleteMulti',
+                type: 'audios/deleteMulti',
                 payload: {
                     ids: selectedRows.map(row => row._id),
                 },
@@ -431,7 +433,7 @@ export default class SongsList extends PureComponent {
             break;
         default:
             dispatch({
-                type: 'songs/updateMulti',
+                type: 'audios/updateMulti',
                 payload: {
                     ids: selectedRows.map(row => row._id),
                     attrs: {
@@ -467,7 +469,7 @@ export default class SongsList extends PureComponent {
             });
 
             dispatch({
-                type: 'songs/list',
+                type: 'audios/list',
                 payload: values,
             });
         });
@@ -482,7 +484,7 @@ export default class SongsList extends PureComponent {
     handleCreate = fields => {
         this.props
             .dispatch({
-                type: 'songs/create',
+                type: 'audios/create',
                 payload: fields,
             })
             .then(() => {
@@ -495,7 +497,7 @@ export default class SongsList extends PureComponent {
     handleUpdate = fields => {
         this.props
             .dispatch({
-                type: 'songs/update',
+                type: 'audios/update',
                 payload: fields,
             })
             .then(() => {
@@ -523,14 +525,14 @@ export default class SongsList extends PureComponent {
 
     updateItem = item => {
         this.props.dispatch({
-            type: 'songs/update',
+            type: 'audios/update',
             payload: item,
         });
     };
 
     render() {
         const {
-            songs: { list: songsList },
+            audios: { list: audiosList },
             lyrics: { list: lyricsList },
             tags: { list: tagsList },
             qiniu,
@@ -545,7 +547,7 @@ export default class SongsList extends PureComponent {
             },
             {
                 title: '歌曲名',
-                dataIndex: 'song_name',
+                dataIndex: 'audio_name',
             },
             {
                 title: '歌曲封面',
@@ -556,7 +558,7 @@ export default class SongsList extends PureComponent {
                             <img
                                 src={`http://${val.url}`}
                                 alt=""
-                                style={{ width: '50px', height: '50px' }}
+                                style={{ width: '50px', height: '50px', objectFit: "cover" }}
                             />
                         );
                     }
@@ -634,7 +636,7 @@ export default class SongsList extends PureComponent {
                             selectedRows={selectedRows}
                             loading={loading}
                             rowKey={row => row._id}
-                            data={{ list: songsList }}
+                            data={{ list: audiosList }}
                             columns={columns}
                             onSelectRow={this.handleSelectRows}
                             onChange={this.handleStandardTableChange}
