@@ -167,11 +167,11 @@ class BasicLayout extends React.PureComponent {
         }
     };
     handleNoticeVisibleChange = visible => {
-        if (visible) {
-            this.props.dispatch({
-                type: 'global/fetchNotices',
-            });
-        }
+        // if (visible) {
+        //     this.props.dispatch({
+        //         type: 'global/fetchNotices',
+        //     });
+        // }
     };
     render() {
         const {
@@ -259,6 +259,6 @@ class BasicLayout extends React.PureComponent {
 export default connect(({ user, global, loading }) => ({
     currentUser: user.currentUser,
     collapsed: global.collapsed,
-    fetchingNotices: loading.effects['global/fetchNotices'],
+    // fetchingNotices: loading.effects['global/fetchNotices'],
     notices: global.notices,
 }))(BasicLayout);
