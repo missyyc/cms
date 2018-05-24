@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
 
-const APIURL = 'http://127.0.0.1:5000/api/v1';
+const APIURL = 'http://api.yangyangchong.com/api/v1';
 
 export async function accountLogin(params) {
     return request(`${APIURL}/auth`, {
