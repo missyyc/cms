@@ -36,7 +36,7 @@ const CreateForm = Form.create()(props => {
     const {
         modalVisible,
         editableItem,
-        lyrics,
+        lyricsList,
         tags,
         qiniu: { token, domain },
         editable,
@@ -45,6 +45,9 @@ const CreateForm = Form.create()(props => {
         handleUpdate,
         handleModalVisible,
     } = props;
+
+    console.log('editableItem================>', editableItem)
+
     const { getFieldDecorator } = form;
     const okHandle = () => {
         form.validateFields((err, fieldsValue) => {
@@ -52,7 +55,7 @@ const CreateForm = Form.create()(props => {
             if (err) return;
             form.resetFields();
 
-            const { img, audio } = newFieldsValue;
+            const { img, source } = newFieldsValue;
 
             const imgObj = {
                 type: img.type,
@@ -63,20 +66,22 @@ const CreateForm = Form.create()(props => {
                 uid: img.uid,
             };
 
-            const audioObj = {
-                type: audio.type,
-                name: audio.name,
-                url: `${domain}/${audio.response.hash}`,
-                hash: audio.response.hash,
-                key: audio.response.key,
-                uid: audio.uid,
+            const sourceObj = {
+                type: source.type,
+                name: source.name,
+                url: `${domain}/${source.response.hash}`,
+                hash: source.response.hash,
+                key: source.response.key,
+                uid: source.uid,
             };
 
             newFieldsValue = Object.assign(
                 newFieldsValue,
                 { img: imgObj },
-                { audio: audioObj }
+                { source: sourceObj }
             );
+
+            console.log('newFieldsValue================>', newFieldsValue)
 
             if (editable) {
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
@@ -99,13 +104,24 @@ const CreateForm = Form.create()(props => {
         },
     };
 
-    const lyricOptions = lyrics.map((lyric, idx) => {
+    const lyricOptions = lyricsList.map((lyric, idx) => {
         return (
             <Option key={`lyric_option_${idx}`} value={lyric._id}>
-                {lyric.audio_name}
+                {lyric.song_name}
             </Option>
         );
     });
+
+    const renderLyricOptions = (lyrics) => {
+        return lyricsList.map((lyric, idx) => {
+            return (
+                <Option key={`lyric_option_${idx}`} value={lyric._id}>
+                    {lyric.song_name}
+                </Option>
+            );
+        });
+    }
+
     const tagOptions = tags.map((tag, idx) => {
         return (
             <Option key={`tag_option_${idx}`} value={tag._id}>
@@ -230,10 +246,6 @@ const CreateForm = Form.create()(props => {
                             initialValue: editableItem.desc,
                             rules: [
                                 {
-                                    required: true,
-                                    message: '请输入歌曲描述',
-                                },
-                                {
                                     max: 50,
                                     message: '最多输入50个字！',
                                 },
@@ -243,12 +255,12 @@ const CreateForm = Form.create()(props => {
 
                     <FormItem {...formItemLayout} label="歌词">
                         {getFieldDecorator('lyrics', {
-                            initialValue: editableItem.lyrics,
+                            initialValue: editableItem.lyrics ? editableItem.lyrics.song_name : editableItem.lyrics,
                             rules: [],
                         })(
                             <Select
                                 showSearch
-                                placeholder="Select a person"
+                                placeholder="选择歌词"
                                 optionFilterProp="children"
                                 filterOption={(input, option) =>
                                     option.props.children
@@ -263,7 +275,7 @@ const CreateForm = Form.create()(props => {
 
                     <FormItem {...formItemLayout} label="标签">
                         {getFieldDecorator('tags', {
-                            initialValue: editableItem.tags,
+                            initialValue: editableItem.tags ? editableItem.tags.map(tag => tag.tag_name) : editableItem.tags,
                             rules: [],
                         })(
                             <Select mode="tags" style={{ width: '100%' }} placeholder="选择标签">
@@ -309,8 +321,8 @@ const CreateForm = Form.create()(props => {
                     </FormItem>
 
                     <FormItem {...formItemLayout} label="选择歌曲">
-                        {getFieldDecorator('audio', {
-                            initialValue: editableItem.audio,
+                        {getFieldDecorator('source', {
+                            initialValue: editableItem.source,
                             valuePropName: 'file',
                             getValueFromEvent: normFile,
                             rules: [
@@ -342,7 +354,7 @@ const CreateForm = Form.create()(props => {
     loading: loading.models.audios,
 }))
 @Form.create()
-export default class SongsList extends PureComponent {
+export default class AudiosList extends PureComponent {
     state = {
         modalVisible: false,
         expandForm: false,
@@ -515,6 +527,7 @@ export default class SongsList extends PureComponent {
     };
 
     editItem = item => {
+        console.log('item================>', item)
         this.setState({
             editable: true,
             editableItem: item,
@@ -648,7 +661,7 @@ export default class SongsList extends PureComponent {
                     editable={editable}
                     editableItem={editableItem}
                     qiniu={qiniu}
-                    lyrics={lyricsList}
+                    lyricsList={lyricsList}
                     tags={tagsList}
                 />
             </PageHeaderLayout>

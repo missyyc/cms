@@ -106,7 +106,7 @@ const CreateForm = Form.create()(props => {
     loading: loading.models.tags,
 }))
 @Form.create()
-export default class SongsList extends PureComponent {
+export default class TagsList extends PureComponent {
     state = {
         modalVisible: false,
         expandForm: false,

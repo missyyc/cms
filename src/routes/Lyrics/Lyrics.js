@@ -129,7 +129,7 @@ const CreateForm = Form.create()(props => {
     loading: loading.models.lyrics,
 }))
 @Form.create()
-export default class SongsList extends PureComponent {
+export default class LyricsList extends PureComponent {
     state = {
         modalVisible: false,
         expandForm: false,
