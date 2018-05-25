@@ -416,7 +416,6 @@ export default class SongsList extends PureComponent {
         const { dispatch } = this.props;
         const { selectedRows } = this.state;
         if (!selectedRows) return;
-        console.log('e.key================>', e.key);
         switch (e.key) {
         case 'remove':
             dispatch({

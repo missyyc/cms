@@ -66,6 +66,7 @@ export default class GlobalHeader extends PureComponent {
             onMenuClick,
             onNoticeClear,
         } = this.props;
+        console.log('currentUser================>', currentUser)
         const menu = (
             <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
                 <Menu.Item disabled>
@@ -149,15 +150,15 @@ export default class GlobalHeader extends PureComponent {
                             emptyImage="https://gw.alipayobjects.com/zos/rmsportal/HsIsxMZiWKrNUavQUXqx.svg"
                         />
                     </NoticeIcon>
-                    {currentUser.name ? (
+                    {currentUser.username ? (
                         <Dropdown overlay={menu}>
                             <span className={`${styles.action} ${styles.account}`}>
                                 <Avatar
                                     size="small"
                                     className={styles.avatar}
-                                    src={currentUser.avatar}
+                                    src={currentUser.avatar || 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'}
                                 />
-                                <span className={styles.name}>{currentUser.name}</span>
+                                <span className={styles.name}>{currentUser.username}</span>
                             </span>
                         </Dropdown>
                     ) : (

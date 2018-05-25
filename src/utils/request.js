@@ -65,8 +65,6 @@ export default function request(url, options) {
         }
     }
 
-    console.log('newOptions================>', newOptions)
-
     return fetch(url, newOptions)
         .then(checkStatus)
         .then(response => {

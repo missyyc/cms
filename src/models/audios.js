@@ -88,7 +88,6 @@ export default {
             };
         },
         deleteItem(state, action) {
-            console.log('action================>', action);
             return {
                 ...state,
                 list: _.pullAllWith(state.list, action.payload.ids, (obj, id) => obj._id === id),

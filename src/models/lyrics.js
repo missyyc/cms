@@ -57,7 +57,6 @@ export default {
         },
         *deleteMulti({ payload }, { call, put }) {
             const response = yield call(deleteMultiLyrics, payload);
-            console.log('response================>', response);
             if (response) {
                 message.success('删除歌词成功');
                 yield put({

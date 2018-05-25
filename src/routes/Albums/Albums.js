@@ -38,7 +38,7 @@ const CreateForm = Form.create()(props => {
         editableItem,
         editable,
         tags,
-        songs,
+        audios,
         qiniu: { token, domain },
         form,
         handleCreate,
@@ -57,7 +57,7 @@ const CreateForm = Form.create()(props => {
             } else {
                 const { img, audio } = newFieldsValue;
 
-                let imgObj = {
+                const imgObj = {
                     type: img.type,
                     name: img.name,
                     url: `${domain}/${img.response.hash}`,
@@ -92,10 +92,10 @@ const CreateForm = Form.create()(props => {
         );
     });
 
-    const songsOptions = songs.map((song, idx) => {
+    const audiosOptions = audios.map((audio, idx) => {
         return (
-            <Option key={`song_option_${idx}`} value={song._id}>
-                {song.song_name}
+            <Option key={`audio_option_${idx}`} value={audio._id}>
+                {audio.audio_name}
             </Option>
         );
     });
@@ -152,7 +152,7 @@ const CreateForm = Form.create()(props => {
                             rules: [],
                         })(
                             <Select mode="tags" style={{ width: '100%' }} placeholder="选择歌曲">
-                                {songsOptions}
+                                {audiosOptions}
                             </Select>
                         )}
                     </FormItem>
@@ -203,9 +203,9 @@ const CreateForm = Form.create()(props => {
     );
 });
 
-@connect(({ albums, songs, tags, qiniu, loading }) => ({
+@connect(({ albums, audios, tags, qiniu, loading }) => ({
     albums,
-    songs,
+    audios,
     tags,
     qiniu,
     loading: loading.models.albums,
@@ -227,7 +227,7 @@ export default class SongsList extends PureComponent {
             type: 'albums/list',
         });
         dispatch({
-            type: 'songs/list',
+            type: 'audios/list',
         });
         dispatch({
             type: 'tags/list',
@@ -287,45 +287,45 @@ export default class SongsList extends PureComponent {
         if (!selectedRows) return;
 
         switch (e.key) {
-            case 'remove':
-                dispatch({
-                    type: 'albums/deleteMulti',
-                    payload: {
-                        ids: selectedRows.map(row => row._id),
-                    },
-                    callback: () => {
-                        this.setState({
-                            selectedRows: [],
-                        });
-                    },
-                });
-                break;
-            case 'upshelves':
-                dispatch({
-                    type: 'albums/updateMulti',
-                    payload: {
-                        ids: selectedRows.map(row => row._id),
-                        attrs: {
-                            status: 1,
-                        },
-                    },
-                }).then(() => {
+        case 'remove':
+            dispatch({
+                type: 'albums/deleteMulti',
+                payload: {
+                    ids: selectedRows.map(row => row._id),
+                },
+                callback: () => {
                     this.setState({
                         selectedRows: [],
                     });
-                });
-                break;
-            default:
-                dispatch({
-                    type: 'albums/updateMulti',
-                    payload: {
-                        ids: selectedRows.map(row => row._id),
-                        attrs: {
-                            status: -1,
-                        },
+                },
+            });
+            break;
+        case 'upshelves':
+            dispatch({
+                type: 'albums/updateMulti',
+                payload: {
+                    ids: selectedRows.map(row => row._id),
+                    attrs: {
+                        status: 1,
                     },
-                }).then(() => {});
-                break;
+                },
+            }).then(() => {
+                this.setState({
+                    selectedRows: [],
+                });
+            });
+            break;
+        default:
+            dispatch({
+                type: 'albums/updateMulti',
+                payload: {
+                    ids: selectedRows.map(row => row._id),
+                    attrs: {
+                        status: -1,
+                    },
+                },
+            }).then(() => {});
+            break;
         }
     };
 
@@ -417,7 +417,7 @@ export default class SongsList extends PureComponent {
     render() {
         const {
             albums: { list: albumsList },
-            songs: { list: songsList },
+            audios: { list: audiosList },
             tags: { list: tagsList },
             qiniu,
             loading,
@@ -526,7 +526,7 @@ export default class SongsList extends PureComponent {
                     {...parentMethods}
                     modalVisible={modalVisible}
                     tags={tagsList}
-                    songs={songsList}
+                    audios={audiosList}
                     qiniu={qiniu}
                     editable={editable}
                     editableItem={editableItem}

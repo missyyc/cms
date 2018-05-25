@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { accountLogin } from '../services/api';
-import { setAuthority, setToken } from '../utils/authority';
+import { setAuthority, setToken, removeTokenAndAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 
 export default {
@@ -8,13 +8,15 @@ export default {
 
     state: {
         status: undefined,
+        // currentUser: {},
     },
 
     effects: {
         *login({ payload }, { call, put }) {
             const response = yield call(accountLogin, payload);
+            console.log('response================>', response.status)
             yield put({
-                type: 'setToken',
+                type: 'setUserAndToken',
                 payload: response,
             });
             yield put({
@@ -36,13 +38,14 @@ export default {
                 urlParams.searchParams.set('redirect', pathname);
                 window.history.replaceState(null, 'login', urlParams.href);
             } finally {
-                yield put({
-                    type: 'changeLoginStatus',
-                    payload: {
-                        status: false,
-                        currentAuthority: 'guest',
-                    },
-                });
+                // yield put({
+                //     type: 'changeLoginStatus',
+                //     payload: {
+                //         status: false,
+                //         currentAuthority: 'guest',
+                //     },
+                // });
+                removeTokenAndAuthority();
                 reloadAuthorized();
                 yield put(routerRedux.push('/user/login'));
             }
@@ -60,11 +63,12 @@ export default {
             };
         },
 
-        setToken(state, { payload }) {
+        setUserAndToken(state, { payload }) {
             setToken(payload.token);
 
             return {
                 ...state,
+                // currentUser: payload.user,
                 status: payload.status,
                 token: payload.token,
             };

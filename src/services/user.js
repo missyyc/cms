@@ -1,9 +1,12 @@
 import request from '../utils/request';
+import config from '../config.js';
+
+const { APIURL } = config;
 
 export async function query() {
-    return request('/api/users');
+    return request(`${APIURL}/users`);
 }
 
 export async function queryCurrent() {
-    return request('/api/currentUser');
+    return request(`${APIURL}/users/current`);
 }

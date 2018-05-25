@@ -37,7 +37,6 @@ const getRedirect = item => {
     }
 };
 getMenuData().forEach(getRedirect);
-console.log('redirectData================>', redirectData)
 
 /**
  * 获取面包屑映射
@@ -133,7 +132,6 @@ class BasicLayout extends React.PureComponent {
             window.history.replaceState(null, 'redirect', urlParams.href);
         } else {
             const { routerData } = this.props;
-            console.log('routerData================>', routerData)
             // get the first authorized route path in routerData
             const authorizedPath = Object.keys(routerData).find(
                 item => check(routerData[item].authority, item) && item !== '/'
@@ -184,7 +182,6 @@ class BasicLayout extends React.PureComponent {
             location,
         } = this.props;
         const bashRedirect = this.getBashRedirect();
-        console.log('bashRedirect================>', bashRedirect)
         const layout = (
             <Layout>
                 <SiderMenu

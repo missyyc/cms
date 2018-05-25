@@ -1,7 +1,8 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
+import config from '../config.js';
 
-const APIURL = 'http://api.yangyangchong.com/api/v1';
+const { APIURL } = config;
 
 export async function accountLogin(params) {
     return request(`${APIURL}/auth`, {
@@ -64,6 +65,7 @@ export async function deleteMultiAudios(params) {
 
 // 专辑信息==========================
 export async function fetchAlbums() {
+    console.log('fetch albums================>')
     return request(`${APIURL}/albums/list`);
 }
 

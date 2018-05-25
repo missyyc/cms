@@ -15,3 +15,8 @@ export function setToken(token) {
     return localStorage.setItem('yyc-token', token);
 }
 
+export function removeTokenAndAuthority() {
+    localStorage.removeItem('yyc-token')
+    localStorage.removeItem('yyc-authority');
+}
+
