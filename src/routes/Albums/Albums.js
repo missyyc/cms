@@ -148,7 +148,7 @@ const CreateForm = Form.create()(props => {
 
                     <FormItem {...formItemLayout} label="选择歌曲">
                         {getFieldDecorator('songs', {
-                            initialValue: editableItem.songs,
+                            initialValue: editableItem.songs ? editableItem.songs.map(song => song._id) : editableItem.songs,
                             rules: [],
                         })(
                             <Select mode="tags" style={{ width: '100%' }} placeholder="选择歌曲">
@@ -189,7 +189,7 @@ const CreateForm = Form.create()(props => {
 
                     <FormItem {...formItemLayout} label="标签">
                         {getFieldDecorator('tags', {
-                            initialValue: editableItem.tags,
+                            initialValue: editableItem.tags ? editableItem.tags.map(tag => tag._id) : editableItem.tags,
                             rules: [],
                         })(
                             <Select mode="tags" style={{ width: '100%' }} placeholder="选择标签">
@@ -450,7 +450,7 @@ export default class AlbumsList extends PureComponent {
                 dataIndex: 'songs',
                 render: val => {
                     return val.map((song, idx) => {
-                        return <p key={idx}>{song.song_name}</p>;
+                        return <p key={idx}>{song.audio_name}</p>;
                     });
                 },
             },

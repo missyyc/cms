@@ -65,7 +65,6 @@ export async function deleteMultiAudios(params) {
 
 // 专辑信息==========================
 export async function fetchAlbums() {
-    console.log('fetch albums================>')
     return request(`${APIURL}/albums/list`);
 }
 

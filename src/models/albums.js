@@ -18,7 +18,6 @@ export default {
 
     effects: {
         *list({ payload }, { call, put }) {
-            console.log('call list================>')
             const response = yield call(fetchAlbums, payload);
             yield put({
                 type: 'initList',

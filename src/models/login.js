@@ -14,7 +14,6 @@ export default {
     effects: {
         *login({ payload }, { call, put }) {
             const response = yield call(accountLogin, payload);
-            console.log('response================>', response.status)
             yield put({
                 type: 'setUserAndToken',
                 payload: response,

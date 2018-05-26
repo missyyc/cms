@@ -46,8 +46,6 @@ const CreateForm = Form.create()(props => {
         handleModalVisible,
     } = props;
 
-    console.log('editableItem================>', editableItem)
-
     const { getFieldDecorator } = form;
     const okHandle = () => {
         form.validateFields((err, fieldsValue) => {
@@ -55,38 +53,37 @@ const CreateForm = Form.create()(props => {
             if (err) return;
             form.resetFields();
 
-            const { img, source } = newFieldsValue;
-
-            const imgObj = {
-                type: img.type,
-                name: img.name,
-                url: `${domain}/${img.response.hash}`,
-                hash: img.response.hash,
-                key: img.response.key,
-                uid: img.uid,
-            };
-
-            const sourceObj = {
-                type: source.type,
-                name: source.name,
-                url: `${domain}/${source.response.hash}`,
-                hash: source.response.hash,
-                key: source.response.key,
-                uid: source.uid,
-            };
-
-            newFieldsValue = Object.assign(
-                newFieldsValue,
-                { img: imgObj },
-                { source: sourceObj }
-            );
-
-            console.log('newFieldsValue================>', newFieldsValue)
-
+            
             if (editable) {
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
                 handleUpdate(newFieldsValue)
             } else {
+                const { img, source } = newFieldsValue;
+    
+                const imgObj = {
+                    type: img.type,
+                    name: img.name,
+                    url: `${domain}/${img.response.hash}`,
+                    hash: img.response.hash,
+                    key: img.response.key,
+                    uid: img.uid,
+                };
+    
+                const sourceObj = {
+                    type: source.type,
+                    name: source.name,
+                    url: `${domain}/${source.response.hash}`,
+                    hash: source.response.hash,
+                    key: source.response.key,
+                    uid: source.uid,
+                };
+    
+                newFieldsValue = Object.assign(
+                    newFieldsValue,
+                    { img: imgObj },
+                    { source: sourceObj }
+                );
+
                 handleCreate(newFieldsValue);
             }
 
@@ -173,6 +170,11 @@ const CreateForm = Form.create()(props => {
         return e && e.file;
     };
 
+    const normalizeTags = (value, prevValue = []) => {
+        console.log('value================>', value, prevValue)
+        // return editableItem.tags.map(tag => tag.tag_name)
+    }
+
     return (
         <Modal
             title="添加歌曲"
@@ -255,7 +257,7 @@ const CreateForm = Form.create()(props => {
 
                     <FormItem {...formItemLayout} label="歌词">
                         {getFieldDecorator('lyrics', {
-                            initialValue: editableItem.lyrics ? editableItem.lyrics.song_name : editableItem.lyrics,
+                            initialValue: editableItem.lyrics ? editableItem.lyrics._id : editableItem.lyrics,
                             rules: [],
                         })(
                             <Select
@@ -275,7 +277,7 @@ const CreateForm = Form.create()(props => {
 
                     <FormItem {...formItemLayout} label="标签">
                         {getFieldDecorator('tags', {
-                            initialValue: editableItem.tags ? editableItem.tags.map(tag => tag.tag_name) : editableItem.tags,
+                            initialValue: editableItem.tags ? editableItem.tags.map(tag => tag._id) : editableItem.tags,
                             rules: [],
                         })(
                             <Select mode="tags" style={{ width: '100%' }} placeholder="选择标签">
@@ -527,7 +529,6 @@ export default class AudiosList extends PureComponent {
     };
 
     editItem = item => {
-        console.log('item================>', item)
         this.setState({
             editable: true,
             editableItem: item,
