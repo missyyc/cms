@@ -12,3 +12,4 @@
 
 ##### Version 0.0.7
 1. 修复Audio, Album更新报错的BUG.
+2. 修复创建和更新，列表显示tag空值得BUG.

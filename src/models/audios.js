@@ -31,18 +31,26 @@ export default {
             const response = yield call(createAudio, payload);
             message.success('创建歌曲成功！');
             yield put({
-                type: 'addToList',
-                payload: response.result,
-            });
+                type: 'list',
+                payload,
+            })
+            // yield put({
+            //     type: 'addToList',
+            //     payload: response.result,
+            // });
         },
         *update({ payload }, { call, put }) {
             const response = yield call(updateAudio, payload);
             if (response) {
                 message.success('更新歌曲成功');
                 yield put({
-                    type: 'updateList',
-                    payload: response.result,
-                });
+                    type: 'list',
+                    payload,
+                })
+                // yield put({
+                //     type: 'updateList',
+                //     payload: response.result,
+                // });
             }
         },
         *delete({ payload }, { call, put }) {

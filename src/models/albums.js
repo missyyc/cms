@@ -29,20 +29,32 @@ export default {
         },
         *create({ payload }, { call, put }) {
             const response = yield call(createAlbum, payload);
-            message.success('创建专辑成功！');
-            yield put({
-                type: 'addToList',
-                payload: response.result,
-            });
+            if (response) {
+                message.success('创建专辑成功！');
+                yield put({
+                    type: 'list',
+                    payload,
+                })
+            } else {
+                message.error('创建失败！')
+            }
+            // yield put({
+            //     type: 'addToList',
+            //     payload: response.result,
+            // });
         },
         *update({ payload }, { call, put }) {
             const response = yield call(updateAlbum, payload);
             if (response) {
                 message.success('更新专辑成功');
                 yield put({
-                    type: 'updateList',
-                    payload: response.result,
-                });
+                    type: 'list',
+                    payload,
+                })
+                // yield put({
+                //     type: 'updateList',
+                //     payload: response.result,
+                // });
             }
         },
         *delete({ payload }, { call, put }) {
