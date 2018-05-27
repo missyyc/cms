@@ -51,11 +51,27 @@ const CreateForm = Form.create()(props => {
             let newFieldsValue = { ...fieldsValue };
             if (err) return;
             form.resetFields();
+
             if (editable) {
+                const { img } = newFieldsValue
+
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
+
+                if (img) {
+                    const imgObj = {
+                        type: img.type,
+                        name: img.name,
+                        url: `${domain}/${img.response.hash}`,
+                        hash: img.response.hash,
+                        key: img.response.key,
+                        uid: img.uid,
+                    };
+    
+                    newFieldsValue = { ...newFieldsValue, img: imgObj };
+                }
                 handleUpdate(newFieldsValue);
             } else {
-                const { img, audio } = newFieldsValue;
+                const { img } = newFieldsValue;
 
                 const imgObj = {
                     type: img.type,

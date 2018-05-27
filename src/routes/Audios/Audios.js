@@ -55,7 +55,36 @@ const CreateForm = Form.create()(props => {
 
             
             if (editable) {
+                const { img, source } = newFieldsValue;
+
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
+
+                if (img) {
+                    const imgObj = {
+                        type: img.type,
+                        name: img.name,
+                        url: `${domain}/${img.response.hash}`,
+                        hash: img.response.hash,
+                        key: img.response.key,
+                        uid: img.uid,
+                    };
+    
+                    newFieldsValue = Object.assign(newFieldsValue, { img: imgObj });
+                    newFieldsValue = { ...newFieldsValue, img: imgObj };
+                } 
+                
+                if (source) {
+                    const sourceObj = {
+                        type: source.type,
+                        name: source.name,
+                        url: `${domain}/${source.response.hash}`,
+                        hash: source.response.hash,
+                        key: source.response.key,
+                        uid: source.uid,
+                    };
+                    newFieldsValue = Object.assign(newFieldsValue, { source: sourceObj });
+                }
+                
                 handleUpdate(newFieldsValue)
             } else {
                 const { img, source } = newFieldsValue;
