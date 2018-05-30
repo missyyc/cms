@@ -50,6 +50,7 @@ const CreateForm = Form.create()(props => {
     const okHandle = () => {
         form.validateFields((err, fieldsValue) => {
             let newFieldsValue = { ...fieldsValue };
+            console.log('newFieldsValue================>', newFieldsValue)
             if (err) return;
             form.resetFields();
 
@@ -59,7 +60,7 @@ const CreateForm = Form.create()(props => {
 
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
 
-                if (img) {
+                if (img.response) {
                     const imgObj = {
                         type: img.type,
                         name: img.name,
@@ -73,7 +74,7 @@ const CreateForm = Form.create()(props => {
                     newFieldsValue = { ...newFieldsValue, img: imgObj };
                 } 
                 
-                if (source) {
+                if (source.response) {
                     const sourceObj = {
                         type: source.type,
                         name: source.name,

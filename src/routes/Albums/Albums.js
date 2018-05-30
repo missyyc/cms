@@ -57,7 +57,7 @@ const CreateForm = Form.create()(props => {
 
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
 
-                if (img) {
+                if (img.response) {
                     const imgObj = {
                         type: img.type,
                         name: img.name,
