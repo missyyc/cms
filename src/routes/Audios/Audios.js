@@ -60,7 +60,7 @@ const CreateForm = Form.create()(props => {
 
                 newFieldsValue = { ...newFieldsValue, _id: editableItem._id };
 
-                if (img.response) {
+                if (img && img.response) {
                     const imgObj = {
                         type: img.type,
                         name: img.name,
@@ -74,7 +74,7 @@ const CreateForm = Form.create()(props => {
                     newFieldsValue = { ...newFieldsValue, img: imgObj };
                 } 
                 
-                if (source.response) {
+                if (source && source.response) {
                     const sourceObj = {
                         type: source.type,
                         name: source.name,
@@ -217,7 +217,7 @@ const CreateForm = Form.create()(props => {
                 <Form hideRequiredMark style={{ marginTop: 8 }}>
                     <FormItem {...formItemLayout} label="类型">
                         {getFieldDecorator('type', {
-                            initialValue: editableItem.type,
+                            initialValue: editableItem.type ? editableItem.type : 'song',
                             rules: [
                                 {
                                     required: true,
@@ -256,7 +256,7 @@ const CreateForm = Form.create()(props => {
 
                     <FormItem {...formItemLayout} label="歌唱日期">
                         {getFieldDecorator('sing_date', {
-                            initialValue: moment(editableItem.sing_date),
+                            initialValue: editableItem.sing_date ? moment(editableItem.sing_date) : moment().add(-1, "days"),
                             rules: [
                                 {
                                     required: true,
