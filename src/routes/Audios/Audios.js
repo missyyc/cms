@@ -1,6 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+// import signale from 'signale';
 import {
     Card,
     Form,
@@ -22,6 +23,14 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './Audios.less';
 import Config from '../../config';
+
+
+// signale.success('Operation successful');
+// signale.debug('Hello', 'from', 'L59');
+// signale.pending('Write release notes for 1.2.0');
+// signale.fatal(new Error('Unable to acquire lock'));
+// signale.watch('Recursively watching build directory...');
+// signale.complete({prefix: '[task]', message: 'Fix issue #59', suffix: '(@klauscfhq)'});
 
 const FormItem = Form.Item;
 const { Option } = Select;
