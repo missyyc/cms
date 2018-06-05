@@ -28,11 +28,13 @@ import styles from './Lyrics.less';
 const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
+const ButtonGroup = Button.Group;
 
 const getValue = obj =>
     Object.keys(obj)
         .map(key => obj[key])
         .join(',');
+
 
 const CreateForm = Form.create()(props => {
     const {
@@ -58,6 +60,25 @@ const CreateForm = Form.create()(props => {
             }
         });
     };
+
+    function changeTime(leftorright,lyrics) {
+        // console.log(lyrics);
+        var reg=new RegExp("\\[\\d{2}\\:\\d{2}\\.\\d{2}]","g");
+        var result;
+        while ((result=reg.exec(lyrics))!=null){
+            var ms=result[0].substr(1,2)*1000*60+result[0].substr(4,5)*1000;
+            leftorright==0?(ms>=500?ms-=500:ms=0):ms+=500;
+            ms="["+("00"+parseInt(ms/(60*1000))).substr(-2)+":"+("00"+(((ms-parseInt(ms/(60*1000))*1000*60))/1000).toFixed(2)).substr(-5)+"]"
+            lyrics=lyrics.replace(result[0],ms);
+            // console.log(result[0]+ms)
+        }
+        // console.log(lyrics);
+        form.setFieldsValue({
+            lyrics:lyrics
+        });
+        editableItem.lyrics=lyrics
+    }
+
     const formItemLayout = {
         labelCol: {
             xs: { span: 24 },
@@ -108,6 +129,16 @@ const CreateForm = Form.create()(props => {
                         })(<Input placeholder="歌者" />)}
                     </FormItem>
                     <FormItem {...formItemLayout} label="歌词">
+                        <ButtonGroup>
+                            <Button type="primary" onClick={()=>{
+                                changeTime(0,editableItem.lyrics)}}>
+                                <Icon type="left"/>-0.5s
+                            </Button>
+                            <Button type="primary" onClick={()=>{
+                                changeTime(1,editableItem.lyrics)}}>
+                                <Icon type="right"/>+0.5s
+                            </Button>
+                        </ButtonGroup>
                         {getFieldDecorator('lyrics', {
                             initialValue: editableItem.lyrics,
                             rules: [
@@ -171,6 +202,9 @@ export default class LyricsList extends PureComponent {
             payload: params,
         });
     };
+
+
+
 
     handleFormReset = () => {
         const { form, dispatch } = this.props;
