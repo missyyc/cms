@@ -41,6 +41,8 @@ const getValue = obj =>
         .map(key => obj[key])
         .join(',');
 
+const UploadAction = Config['qiniu-upload-url']
+
 const CreateForm = Form.create()(props => {
     const {
         modalVisible,
@@ -59,7 +61,6 @@ const CreateForm = Form.create()(props => {
     const okHandle = () => {
         form.validateFields((err, fieldsValue) => {
             let newFieldsValue = { ...fieldsValue };
-            console.log('newFieldsValue================>', newFieldsValue)
             if (err) return;
             form.resetFields();
 
@@ -166,10 +167,8 @@ const CreateForm = Form.create()(props => {
         );
     });
 
-    const action = Config['qiniu-upload-url'];
-
     const uploadProps = {
-        action,
+        action: UploadAction,
         name: 'file',
         listType: 'picture-card',
         onChange({ file }) {
@@ -186,7 +185,7 @@ const CreateForm = Form.create()(props => {
     };
 
     const uploadImgProps = {
-        action,
+        action: UploadAction,
         name: 'file',
         listType: 'picture-card',
         onChange({ file, fileList }) {
@@ -387,6 +386,205 @@ const CreateForm = Form.create()(props => {
     );
 });
 
+const CreateBatchUploadForm = Form.create()(props => {
+    const {
+        batchUploadModalVisible,
+        qiniu: { token, domain },
+        form,
+        handleCreateBatchAudios,
+        handleBatchUploadModalVisible,
+        newAudios,
+    } = props;
+    const { getFieldDecorator } = form;
+    const formItemLayout = {
+        labelCol: {
+            xs: { span: 24 },
+            sm: { span: 5 },
+            md: { span: 5 },
+        },
+        wrapperCol: {
+            xs: { span: 24 },
+            sm: { span: 19 },
+            md: { span: 19 },
+        },
+    };
+
+    const okHandle = () => {
+        form.validateFields((err, fieldsValue) => {
+            const newFieldsValue = { ...fieldsValue };
+            if (err) return;
+            const { 
+                img,
+                sing_date,
+                sources,
+                songsList,
+            } = newFieldsValue
+
+            let ret = {}
+
+            const songsInfo = songsList.split(/[\n]/g)
+            for (const info of songsInfo) {
+                const [songName, singerName] = info.split(',')
+                ret[songName] = {}
+                ret[songName].audio_name = songName
+                ret[songName].cover_singer = singerName
+            }
+
+            for (const source of sources) {
+                const { name } = source
+                const songName = name.match(/[\u4e00-\u9fa5]+/g)[0]
+                if (ret[songName]) {
+                    ret[songName].source = {
+                        type: source.type,
+                        name: source.name,
+                        url: `${domain}/${source.response.hash}`,
+                        hash: source.response.hash,
+                        key: source.response.key,
+                        uid: source.uid,
+                    };
+                }
+            }
+
+            if (Object.keys(ret).length > 0) {
+                for (let key in ret) {
+                    let retItem = ret[key]
+                    retItem.img = {
+                        type: img.type,
+                        name: img.name,
+                        url: `${domain}/${img.response.hash}`,
+                        hash: img.response.hash,
+                        key: img.response.key,
+                        uid: img.uid,
+                    };
+                    retItem.sing_date = sing_date
+                }
+            }
+
+            const audios = Object.keys(ret).map((key) => ret[key])
+            handleCreateBatchAudios(audios)
+        })
+    }
+
+    const uploadProps = {
+        action: UploadAction,
+        name: 'file',
+        listType: 'picture-card',
+        multiple: true,
+        onChange({ file, fileList }) {
+            if (file.status === 'uploading') {
+                return;
+            }
+            if (file.status === 'done') {
+                message.success(`${file.name} 上传成功`);
+            }
+            if (file.status === 'error') {
+                message.error(`${file.name} 上传失败.`);
+            }
+        },
+    };
+
+    const normFile = e => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.file;
+    };
+
+    const normFileList = e => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e && e.fileList
+    }
+
+    return (
+        <Modal
+            title="批量添加歌曲"
+            width={800}
+            visible={batchUploadModalVisible}
+            onCancel={() => handleBatchUploadModalVisible()}
+            onOk={okHandle}
+        >            
+            <Card bordered={false}>
+                <FormItem {...formItemLayout} label="歌唱日期">
+                    {getFieldDecorator('sing_date', {
+                        initialValue: moment().add(-1, "days"),
+                        rules: [
+                            {
+                                required: true,
+                                message: '请输入歌唱日期',
+                            },
+                        ],
+                    })(
+                        <DatePicker
+                            showTime={{ format: 'HH:mm' }}
+                            format="YYYY-MM-DD HH:mm"
+                            style={{ width: '100%' }}
+                            placeholder="歌唱日期"
+                        />
+                    )}
+                </FormItem>
+                <FormItem {...formItemLayout} label="填写所有歌曲信息">
+                    {getFieldDecorator('songsList', {
+                        initialValue: newAudios.songsList,
+                        rules: [
+                            {
+                                required: true,
+                                message: '填写所有歌曲信息',
+                            },
+                        ],
+                    })(
+                        <TextArea placeholder="填写所有歌曲信息" autosize={{minRows: 10}} />
+                    )}
+                </FormItem>
+
+                <FormItem {...formItemLayout} label="选择图片">
+                    {getFieldDecorator('img', {
+                        initialValue: newAudios.img,
+                        valuePropName: 'file',
+                        getValueFromEvent: normFile,
+                        rules: [
+                            {
+                                required: true,
+                                message: '选择歌曲',
+                            },
+                        ],
+                    })(
+                        <Upload.Dragger {...uploadProps} data={{ token }}>
+                            <p className="ant-upload-drag-icon">
+                                <Icon type="inbox" />
+                            </p>
+                            <p className="ant-upload-text">拖入文件进行上传</p>
+                        </Upload.Dragger>
+                    )}
+                </FormItem>
+
+
+                <FormItem {...formItemLayout} label="选择歌曲">
+                    {getFieldDecorator('sources', {
+                        initialValue: newAudios.sources,
+                        valuePropName: 'file',
+                        getValueFromEvent: normFileList,
+                        rules: [
+                            {
+                                required: true,
+                                message: '选择歌曲',
+                            },
+                        ],
+                    })(
+                        <Upload.Dragger {...uploadProps} data={{ token }}>
+                            <p className="ant-upload-drag-icon">
+                                <Icon type="inbox" />
+                            </p>
+                            <p className="ant-upload-text">拖入文件进行上传</p>
+                        </Upload.Dragger>
+                    )}
+                </FormItem>
+            </Card>
+        </Modal>
+    )
+})
+
 @connect(({ audios, lyrics, tags, qiniu, loading }) => ({
     audios,
     lyrics,
@@ -398,11 +596,13 @@ const CreateForm = Form.create()(props => {
 export default class AudiosList extends PureComponent {
     state = {
         modalVisible: false,
+        batchUploadModalVisible: false,
         expandForm: false,
         selectedRows: [],
         formValues: {},
         editable: false,
         editableItem: {},
+        newAudios: [],
     };
 
     componentDidMount() {
@@ -533,6 +733,12 @@ export default class AudiosList extends PureComponent {
         });
     };
 
+    handleBatchUploadModalVisible = () => {
+        this.setState({
+            batchUploadModalVisible: false,
+        })
+    }
+
     handleCreate = fields => {
         this.props
             .dispatch({
@@ -559,6 +765,19 @@ export default class AudiosList extends PureComponent {
             });
     };
 
+    handleCreateBatchAudios = fields => {
+        this.props
+            .dispatch({
+                type: 'audios/createBatch',
+                payload: fields,
+            })
+            .then(() => {
+                this.setState({
+                    batchUploadModalVisible: false,
+                })
+            })
+    }
+
     createItem = () => {
         this.setState({
             editable: false,
@@ -566,6 +785,14 @@ export default class AudiosList extends PureComponent {
             modalVisible: true,
         });
     };
+
+    createItems = () => {
+        this.setState({
+            editable: false,
+            newAudios: [],
+            batchUploadModalVisible: true,
+        })
+    }
 
     editItem = item => {
         this.setState({
@@ -590,7 +817,7 @@ export default class AudiosList extends PureComponent {
             qiniu,
             loading,
         } = this.props;
-        const { selectedRows, editable, editableItem, modalVisible } = this.state;
+        const { selectedRows, editable, editableItem, newAudios, modalVisible, batchUploadModalVisible } = this.state;
         const columns = [
             {
                 title: '类型',
@@ -666,6 +893,11 @@ export default class AudiosList extends PureComponent {
             handleModalVisible: this.handleModalVisible,
         };
 
+        const batchUploadParentMethods = {
+            handleCreateBatchAudios: this.handleCreateBatchAudios,
+            handleBatchUploadModalVisible: this.handleBatchUploadModalVisible,
+        }
+
         return (
             <PageHeaderLayout title="查询表格">
                 <Card bordered={false}>
@@ -673,6 +905,9 @@ export default class AudiosList extends PureComponent {
                         <div className={styles.tableListOperator}>
                             <Button icon="plus" type="primary" onClick={() => this.createItem()}>
                                 新建
+                            </Button>
+                            <Button icon="plus" type="primary" onClick={() => this.createItems()}>
+                                批量上传
                             </Button>
                             {selectedRows.length > 0 && (
                                 <span>
@@ -703,6 +938,14 @@ export default class AudiosList extends PureComponent {
                     qiniu={qiniu}
                     lyricsList={lyricsList}
                     tags={tagsList}
+                />
+
+                {/* 批量上传 */}
+                <CreateBatchUploadForm
+                    {...batchUploadParentMethods}
+                    batchUploadModalVisible={batchUploadModalVisible}
+                    qiniu={qiniu}
+                    newAudios={newAudios}
                 />
             </PageHeaderLayout>
         );

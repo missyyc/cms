@@ -7,6 +7,7 @@ import {
     updateAudio,
     deleteAudio,
     deleteMultiAudios,
+    createBatchAudios,
 } from '../services/api';
 
 export default {
@@ -38,6 +39,14 @@ export default {
             //     type: 'addToList',
             //     payload: response.result,
             // });
+        },
+        *createBatch({ payload }, { call, put }) {
+            const reponse = yield call(createBatchAudios, payload)
+            message.success('创建多个歌曲成功');
+            yield put({
+                type: 'list',
+                payload,
+            })
         },
         *update({ payload }, { call, put }) {
             const response = yield call(updateAudio, payload);

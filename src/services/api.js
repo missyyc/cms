@@ -63,6 +63,13 @@ export async function deleteMultiAudios(params) {
     });
 }
 
+export async function createBatchAudios(params) {
+    return request(`${APIURL}/audios/create/multi`, {
+        method: 'POST',
+        body: params,
+    })
+}
+
 // 专辑信息==========================
 export async function fetchAlbums() {
     return request(`${APIURL}/albums/list`);
