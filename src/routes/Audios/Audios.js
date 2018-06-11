@@ -432,7 +432,8 @@ const CreateBatchUploadForm = Form.create()(props => {
 
             for (const source of sources) {
                 const { name } = source
-                const songName = name.match(/[\u4e00-\u9fa5]+/g)[0]
+                const songName = name.match(/\s(\w.+).mp3/)[1]
+                // const songName = name.match(/[\u4e00-\u9fa5]+/g)[0]
                 if (ret[songName]) {
                     ret[songName].source = {
                         type: source.type,
