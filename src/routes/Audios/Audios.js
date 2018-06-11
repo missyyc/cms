@@ -911,7 +911,7 @@ export default class AudiosList extends PureComponent {
                             <Button icon="plus" type="primary" onClick={() => this.createItems()}>
                                 批量上传
                             </Button>
-                            {selectedRows.length > 0 && (
+                            {/* {selectedRows.length > 0 && (
                                 <span>
                                     <Dropdown overlay={menu}>
                                         <Button>
@@ -919,7 +919,7 @@ export default class AudiosList extends PureComponent {
                                         </Button>
                                     </Dropdown>
                                 </span>
-                            )}
+                            )} */}
                         </div>
                         <StandardTable
                             selectedRows={selectedRows}
